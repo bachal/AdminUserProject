@@ -31,9 +31,6 @@ export default function Login() {
     const handleLogin = async () => {
         const userLogged = await userLogin(loginData)
         if (userLogged) {
-            if (localStorage.getItem('userToken')) {
-                localStorage.removeItem('userToken')
-            }
             localStorage.setItem('userToken', userLogged.token)
             localStorage.setItem('userType', userLogged.roleId)
             if (userLogged && userLogged.roleId == 2) {

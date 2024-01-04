@@ -38,4 +38,15 @@ const uploadImage = async (data) => {
     }
 
 }
-export { getProducts, addProduct,uploadImage }
+
+const nextPage = async (num) => {
+    try {
+        const response = await httpAxios.get(`product-list?page=${num}`, apiHeaderToken)
+        const productData = await response.data
+        return productData
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+export { getProducts, addProduct,uploadImage,nextPage }

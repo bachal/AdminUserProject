@@ -83,4 +83,15 @@ const uploadImage = async (data) => {
     }
 
 }
-export { userLogin, getUserList, deleteUser, getCountry, getStates, addUser, uploadImage }
+
+const nextPage = async (num) => {
+    try {
+        const response = await httpAxios.get(`seller-list?page=${num}`, apiHeaderToken)
+        const users = await response.data
+        return users
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+export { userLogin, getUserList, deleteUser, getCountry, getStates, addUser, uploadImage,nextPage }

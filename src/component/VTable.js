@@ -14,9 +14,12 @@ const Table = ({
   handlePageChange,
   handleRowsPerPageChange,
   isTableLoading,
+  handleNextClick
 }) => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+  const [activePage, setActivePage] = useState(1);
+
 
   useEffect(() => {
     setSortConfig({ key: "default", direction: "desc" });
@@ -104,6 +107,15 @@ const Table = ({
     setRowsPerPage(value);
     handleRowsPerPageChange(value);
   };
+
+  const handlePage = (e, val) => {
+    setActivePage(val)
+    let currentPage = activePage
+    if (currentPage !== val) {
+      handleNextClick(val)
+    }
+  }
+
 
   return (
     <div className="p-2 bg-primaryDarkCards rounded-lg border border-primaryGray-700 overflow-x-auto table-content" >
@@ -226,7 +238,7 @@ const Table = ({
         <select
           className=" p-2 bg-primaryDarkCards rounded-lg border border-primaryGray-700 overflow-x-auto text-sm"
           value={rowsPerPage}
-          onChange={handleChangeRowsPerPage}
+          //onChange={handleChangeRowsPerPage}
           style={{ borderRadius: "4px" }}
         >
           <option value={10}>10 per page</option>
@@ -234,12 +246,12 @@ const Table = ({
           <option value={50}>50 per page</option>
         </select>
         <Pagination
-          page={page}
-          onChange={handlePageChange}
-          count={totalPages}
-          color="primary"
-          variant="outlined"
-          shape="rounded"
+           page={activePage}
+           onChange={(e, val) => handlePage(e, val)}
+           count={2}
+           color="primary"
+           variant="outlined"
+           shape="rounded"
         />
       </Stack>
     </div>

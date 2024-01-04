@@ -3,7 +3,7 @@ import Table from "../component/VTable";
 import Layout from "../component/Layout";
 import { Link, useNavigate, useOutlet } from "react-router-dom";
 import { Trash2 } from 'lucide-react';
-import { deleteUser, getUserList } from "../services/userApi";
+import { deleteUser, getUserList, nextPage } from "../services/userApi";
 export default function List() {
     const [userList, setUserList] = useState([])
     const [userData, setUserData] = useState([])
@@ -107,6 +107,23 @@ export default function List() {
         }
     }
 
+    const handleNextClick = async (given) => {
+        if (given != 1) {
+            const userListData = await nextPage(given);
+
+            if (userListData) {
+                let usersArray = userListData.data
+                const updated = usersArray.map(({ phone: phoneno, ...rest }) => ({ phoneno, ...rest }));
+                const srAdded = updated.map((item, index) => ({ ...item, srno: index + 1 }))
+                setUserData(srAdded)
+                setUserList(userListData)
+            }
+        }
+        else {
+            getUsers();
+        }
+    }
+
 
     return (
         <>
@@ -121,7 +138,7 @@ export default function List() {
                         <div className="flex justify-end mb-3 p-2">
                             <Link to="/Stepperform" className="rounded-lg px-4 py-2 bg-green-700 text-green-100 hover:bg-green-800 duration-300">Add</Link>
                         </div>
-                        <Table cols={columns} data={userData} />
+                        <Table cols={columns} data={userData} handleNextClick={handleNextClick}/>
                     </div>
                 </div>
             </Layout>

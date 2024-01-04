@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import Table from "../../component/VTable";
 import Layout from "../../component/Layout";
 import { Link, useNavigate } from "react-router-dom";
-import { getProducts } from "../../services/productApi";
+import { getProducts, nextPage } from "../../services/productApi";
 export default function Product() {
     const [prodData, setProdData] = useState([])
-    const navigate=useNavigate();
+    const navigate = useNavigate();
     const columns = [
         {
             title: "#",
@@ -70,14 +70,14 @@ export default function Product() {
         },
 
     ]
-  
+
 
     useEffect(() => {
-        let userRole=localStorage.getItem('userType')
-        if(userRole!=2){
-             navigate('/List')
+        let userRole = localStorage.getItem('userType')
+        if (userRole != 2) {
+            navigate('/List')
         }
-        else{
+        else {
             getProductsdata();
         }
         getProductsdata();
@@ -93,6 +93,23 @@ export default function Product() {
         }
     }
 
+    const handleNextClick = async (given) => {
+        if (given != 1) {
+            const productData = await nextPage(given);
+            if (productData) {
+                let prodArray = productData.data
+                const updated = prodArray.map(({ price: Price, ...rest }) => ({ Price, ...rest }));
+                const srAdded = updated.map((item, index) => ({ ...item, srno: index + 1 }))
+                setProdData(srAdded)
+            }
+        }
+        else {
+            getProductsdata();
+
+        }
+
+    }
+
     return (
         <>
             <Layout>
@@ -106,7 +123,7 @@ export default function Product() {
                         <div className="flex justify-end mb-3 p-2">
                             <Link to="/Add-product" className="rounded-lg px-4 py-2 bg-green-700 text-green-100 hover:bg-green-800 duration-300">Add Product</Link>
                         </div>
-                        <Table cols={columns} data={prodData} />
+                        <Table cols={columns} data={prodData}  handleNextClick={handleNextClick}/>
                     </div>
                 </div>
             </Layout>
